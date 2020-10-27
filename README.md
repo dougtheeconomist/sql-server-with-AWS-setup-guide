@@ -23,10 +23,22 @@ One notable issue that I and others before me have run into can come when incorp
 
 ![config_ex](images/ex1.png)
 
-This means that with programs like the sql plugins for VS Code in which the database name is a required field, connection isn’t even possible when connecting for the first time. Fortunately, with most connection string formats in python, the field “dbname = “ can simply be excluded from the string altogether to successfully connect prior to setting up a database within the server instance for the first time. Thus the following example connection string with pymssql should work.
-
+This means that with programs like the sql plugins for VS Code in which the database name is a required field, connection isn’t even possible when connecting for the first time. Fortunately, with most connection string formats in python, the field “dbname = “ can simply be excluded from the string altogether to successfully connect prior to setting up a database within the server instance for the first time. Thus the following example connection strings with pymssql and pyodbc respectively, should work. 
 
     conn = pymssql.connect(host='endpoint_address',user='******',password='********')
 
+	conn = pyodbc.connect(host='endpoint_address ', port = 1433, UID = "******", PWD="********",DRIVER='ODBC Driver 17 for SQL Server')
 
-Once you have connected and created a database within the server instance, the field database=' ' can be added to this string filled with the name that you choose to attribute to your database.
+Once you have connected and created a database within the server instance, the field database=' ' can be added to this string filled with the name that you choose to attribute to your database. 
+
+## Database Creation
+
+Unless you are instantiating the server from a snapshot of a previously created database, you will have to create a database within the server instance with whatever tables and data you wish to utilize before having a ready for use product for a given use case. This task can also be somewhat tricky, depending on your software setup. If you are using a windows environment the easiest way to do this is to simply install Microsoft’s free to use default program for interacting with a SQL Server database; SQL Server Management Studio. If however, like me, you are working with another operating system which is not supported by this program you are left with a number of alternative option.
+
+The first of which would be to turn again to AWS and fire up an ec2 instance with a windows operating system installed and then download Management Studio and utilize it from there. 
+
+A second approach which was my first choice, is to utilize a python plugin called sql alchemy which has a very useful command called PERSIST, which allows for the export of a pandas dataframe object directly to a table within the database. Unfortunately for me sql alchemy relies on pyodbc for its connection string; while I was with effort able to connect with pyodbc, I was not able to get the specific connection string format used by sql alchemy to work properly. At such a time when I do, this guide will be updated to reflect the necessary procedure.  
+
+Another alternative is to use a non-code based third party program which emulates Management Studio. There are several such programs available; I used SQLPro for mssql. This program was fairly user friendly, and although there is a subscription version, the free to use version was sufficient to do everything that I needed to for database and table creation. The downside of this approach of course is that being a gui based program it may not offer the ability to automate any kind of updates that need to be written to tables.  
+
+Once a method of database and table creation is decided upon, there is one more common issue that can come up. Once I got to the point, I encountered a write permission error, wherein the database failed to recognize me as having the master privileges needed to write a database into the instance despite logging in with the master username and password credentials that I instantiated my instance with. If encountered this error does have a relatively easy fix; simply log back into the RDS dashboard within AWS, select the database and select the option to modify it. From here resetting the master password will restore the master privileges needed to write to the instance. If for whatever the reason you don’t wish to change the password itself at this point, resetting the new password as the same as the old one will be enough to fix the issue. There may be a minimal downtime on the instance while the change takes effect, but I found that this was negligible as long as the password is the only modification being implemented. 
