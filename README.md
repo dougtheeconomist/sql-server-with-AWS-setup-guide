@@ -17,7 +17,9 @@ The last thing to note here during the instantiation process is to make sure you
 
 ## Connecting to Your Database
 
-Now that the easy part is over the next step is connecting to the database with Python in a Jupyter Notebook. There are several programs to do this, I ended up using pyodbc and pymssql. Pyodbc reportedly has more user friendly error messages when something goes wrong, but if you’re using a mac, as I am, the installation process is much more complicated due to issues with the driver needed to connect to the database. For pymssql a simple pip install of this program is enough on a windows machine with an additional brew installation of the freetds driver if connecting from a mac. 
+Now that the easy part is over the next step is connecting to the database with Python in a Jupyter Notebook. There are several programs to do this, I ended up using pyodbc before switching to pymssql. Pyodbc reportedly has more user friendly error messages when something goes wrong, but if you’re using a mac, as I am, the installation process is much more complicated due to issues with the driver needed to connect to the database. If pyodbc is the route you choose to go a very good line by line walkthrough for this installation process can be found [here](https://pyhtonbeginner.blogspot.com/2019/10/installing-microsoft-odbc-driver-to.html) with some important additional steps under the troubleshooting section of the guide found [here](https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/install-microsoft-odbc-driver-sql-server-macos?view=sql-server-ver15#troubleshooting). 
+
+For pymssql a simple pip install of this program is enough on a windows machine with an additional brew installation of the freetds driver if connecting from a mac. This is a much simpler process, so for ease of use in getting other users of my database to a point where they could successfully connect, I ultimately went with this route. 
 
 One notable issue that I and others before me have run into can come when incorporating the database name into the connection string. If connecting to your database instance for the first time, do not include this field into your string as the database instance is instantiated without a database name within it to connect to, unlike with the Postgresql alternative. This can be verified by selecting the database in question from the AWS RDS databases list and looking at instance configuration under the left hand side of the Configuration tab, as shown below. 
 
@@ -29,7 +31,14 @@ This means that with programs like the sql plugins for VS Code in which the data
 
 	conn = pyodbc.connect(host='endpoint_address ', port = 1433, UID = "******", PWD="********",DRIVER='ODBC Driver 17 for SQL Server')
 
-Once you have connected and created a database within the server instance, the field database=' ' can be added to this string filled with the name that you choose to attribute to your database. 
+In the pyodbc version the field UID will be potulated by the master username, just as user is in the pymssql version. In these examples you would copy the endpoint address located under the connectivity and security tab of your database instance accessed from the RDS dashboard to populate the host field. This address will be listed under endpoint and will end in "rds.amazonaws.com". 
+
+Once you have connected and created a database within the server instance, the database name field can be added to this string filled with the name that you choose to attribute to your database. The connection string would then look as follows.
+
+    conn = pymssql.connect(host='endpoint_address',user='******',password='********')
+
+	conn = pyodbc.connect(host='endpoint_address ', port = 1433, UID = "******", PWD="********", dbname='*******', DRIVER='ODBC Driver 17 for SQL Server')
+
 
 ## Database Creation
 
