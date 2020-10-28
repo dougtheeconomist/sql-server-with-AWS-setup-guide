@@ -1,7 +1,9 @@
 # sql-server-AWS-setup-guide-
-A collection of tips I learned the hard way to successfully connecting to a Sql Server instance using Python
+A collection of tips I learned the hard way to successfully connecting to a Sql Server instance using a Python powered Jupyter Notebook. 
 
-I recently went through the experience of setting up and connecting to a sql server database instance hosted by Amazon Web Service’ Relational Database Service. While the actual instance setup via the AWS dashboard was fairly straightforward, connecting to it via Python was less so and I ended up running into several pitfalls along the way. It is my intention to therefore document those pitfalls and how I got past them here in one place in the hopes that this may save someone else some headache in the future. 
+![header_image](images/header1.jpg)
+
+I recently went through the experience of setting up and connecting to a sql server database instance hosted by Amazon Web Service’ Relational Database Service. While the actual instance setup through the AWS dashboard was fairly straightforward, connecting to it via Python was less so and I ended up running into several pitfalls along the way. It is my intention to therefore document those pitfalls and how I got past them here in one place in the hopes that this may be a useful resource to save someone else some headache in the future. With that said, let's dive in.
 
 ## Setup
 
